@@ -1,53 +1,20 @@
-const express      = require('express');
-const path         = require('path');
-const favicon      = require('serve-favicon');
-const logger       = require('morgan');
-const cookieParser = require('cookie-parser');
-const bodyParser   = require('body-parser');
-const {graphqlExpress,graphiqlExpress} = require('apollo-server-express');
+const express = require('express');
+
+// This package automatically parses JSON requests.
+const bodyParser = require('body-parser');
+
+// This package will handle GraphQL server requests and responses
+// for you, based on your schema.
+const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
+
 const schema = require('./schema');
 
-
-const app = express();
-
-// view engine setup
+var app = express();
 app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-// default value for title local
-app.locals.title = 'Express - Generated with IronGenerator';
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
 }));
-const index = require('./routes/index');
-app.use('/', index);
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+const PORT = 3000
+app.listen(PORT, () => {
+  console.log(`Hackernews GraphQL server running on port ${PORT}.`)
 });
-
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
