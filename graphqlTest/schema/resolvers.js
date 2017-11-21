@@ -19,11 +19,12 @@ const links = [
     },
   
     Mutation: {
-      createLink: async (root, data, {mongo: {Links}}) => {
-        createLink: async (root, data, {mongo: {Links}, user}) => {
-            const newLink = Object.assign({postedById: user && user._id}, data)
-            const response = await Links.insert(newLink);
-            return Object.assign({id: response.insertedIds[0]}, newLink);}  },
+      
+      createLink: async (root, data, {mongo: {Links}, user}) => {
+        const newLink = Object.assign({postedById: user && user._id}, data)
+        const response = await Links.insert(newLink);
+        return Object.assign({id: response.insertedIds[0]}, newLink);
+    },
       createUser: async (root, data, {mongo: {Users}}) => {
         // You need to convert the given arguments into the format for the
         // `User` type, grabbing email and password from the "authProvider".
